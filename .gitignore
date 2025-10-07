@@ -1,0 +1,26 @@
+# Build results
+bin/
+obj/
+Debug/
+Release/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Test results
+TestResults/
+*.trx
+
+# Logs
+logs/
+*.log
+
+# Database
+*.mdf
+*.ldf
+
+# OS generated files
+Thumbs.db
+.DS_Store
