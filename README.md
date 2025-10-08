@@ -105,6 +105,84 @@ O projeto segue os princípios da Clean Architecture, separando as responsabilid
 - **Escalabilidade**: Permite evolução independente de cada camada
 - **Flexibilidade**: Facilita a troca de tecnologias sem impactar o core do negócio
 
+## 🗄️ Diagrama Entidade-Relacionamento (DER)
+
+```mermaid
+erDiagram
+    SUPPLIER ||--o{ PRODUCT : fornece
+    SUPPLIER ||--o| SUPPLIER_CONFIGURATION : possui
+    BRAND ||--o{ PRODUCT : classifica
+    PRODUCT ||--|| CURRENT_STOCK : tem
+    PRODUCT ||--o{ STOCK_OUTPUT : registra
+
+    SUPPLIER {
+        uuid Id PK
+        string Nome
+        string Cnpj UK
+        string Telefone
+        string Email UK
+        boolean Ativo
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    BRAND {
+        uuid Id PK
+        string Nome
+        boolean Ativo
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    PRODUCT {
+        uuid Id PK
+        string CodigoProduto UK
+        string NomeProduto
+        boolean Ativo
+        uuid SupplierId FK
+        uuid BrandId FK
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    CURRENT_STOCK {
+        uuid Id PK
+        uuid ProductId FK
+        int QuantidadeAtual
+        datetime DataUltimaAtualizacao
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    STOCK_OUTPUT {
+        uuid Id PK
+        uuid ProductId FK
+        int Quantidade
+        datetime DataSaida
+        string Observacoes
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    SUPPLIER_CONFIGURATION {
+        uuid Id PK
+        uuid SupplierId FK
+        int MesesPlanejamento
+        int MesesMinimos
+        int PrazoEntregaDias
+        boolean Ativo
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+```
+
+### Relacionamentos:
+- **Supplier → Product** (1:N) - Um fornecedor pode fornecer vários produtos
+- **Brand → Product** (1:N) - Uma marca pode ter vários produtos
+- **Product → CurrentStock** (1:1) - Cada produto tem um estoque atual
+- **Product → StockOutput** (1:N) - Um produto pode ter várias saídas de estoque
+- **Supplier → SupplierConfiguration** (1:1) - Cada fornecedor tem uma configuração
+
 ## 👥 Equipe
 
 - Thomas Henrique Baute – RM560649
