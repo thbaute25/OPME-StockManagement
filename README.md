@@ -54,7 +54,7 @@ O sistema abrangerá as principais funcionalidades necessárias para uma gestão
 | ID | Descrição | Categoria |
 |---|---|---|
 | RNF01 | A aplicação deve ser desenvolvida em .NET 8 com arquitetura limpa (Clean Architecture).| Arquitetura |
-| RNF02 | O sistema deve armazenar os dados em banco relacional (SQL Server). | Banco de Dados |
+| RNF02 | O sistema deve armazenar os dados em banco relacional (SQLite).     | Banco de Dados |
 | RNF03 | O sistema deve possuir API RESTful para comunicação entre camadas.  | Integração |
 | RNF04 | Deve seguir princípios de segurança de dados e autenticação JWT.    | Segurança |
 | RNF05 | O sistema deve ter boa escalabilidade e manutenção facilitada.      | Manutenibilidade |
