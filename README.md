@@ -209,9 +209,87 @@ src/
     └── ExternalServices/
 ```
 
-## 🚀 Como Executar
-1. Clone o repositório
-2. Execute `dotnet restore`
-3. Configure a connection string no appsettings.json
-4. Execute `dotnet ef database update`
-5. Execute `dotnet run --project src/Presentation/WebAPI`
+## 🚀 Como Executar a Aplicação
+
+### 📋 Pré-requisitos
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) instalado
+- Git instalado
+- Navegador web (Chrome, Firefox, Edge)
+
+### 🔧 Passo a Passo para Executar
+
+#### 1. **Clone o Repositório**
+```bash
+git clone https://github.com/thbaute25/OPME-StockManagement.git
+cd OPME-StockManagement
+```
+
+#### 2. **Restaurar Dependências**
+```bash
+dotnet restore
+```
+
+#### 3. **Aplicar Migrações do Banco de Dados**
+```bash
+dotnet ef database update --project src/OPME.StockManagement.Infrastructure --startup-project src/OPME.StockManagement.WebAPI
+```
+
+#### 4. **Executar a Aplicação**
+```bash
+dotnet run --project src/OPME.StockManagement.WebAPI --urls "http://localhost:5002"
+```
+
+#### 5. **Acessar a Aplicação**
+- **API Swagger UI**: http://localhost:5002/swagger
+- **API Endpoints**: http://localhost:5002/api/
+
+### 🌐 Endpoints Disponíveis
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/api/Suppliers` | Listar todos os fornecedores |
+| POST | `/api/Suppliers` | Criar novo fornecedor |
+| GET | `/api/Products` | Listar todos os produtos |
+| POST | `/api/Products` | Criar novo produto |
+| POST | `/api/Products/create-brand` | Criar nova marca |
+| GET | `/api/Stock` | Verificar estoque |
+
+### 🗄️ Banco de Dados
+- **Tipo**: SQLite
+- **Arquivo**: `OPMEStockManagement.db` 
+- **Localização**: `src/OPME.StockManagement.WebAPI/`
+
+### 📊 Dados de Exemplo
+A aplicação já vem com dados de exemplo:
+- **Fornecedor**: MedSupply Brasil
+- **Marca**: MedTech  
+- **Produto**: Seringa 10ml
+- **Estoque**: Registrado e monitorado
+
+### 🔍 Como Testar a API
+
+#### **1. Via Swagger UI (Recomendado)**
+1. Acesse: http://localhost:5002/swagger
+2. Clique em qualquer endpoint
+3. Clique em "Try it out"
+4. Preencha os dados necessários
+5. Clique em "Execute"
+
+#### **2. Via Navegador (GET requests)**
+- **Fornecedores**: http://localhost:5002/api/Suppliers
+- **Produtos**: http://localhost:5002/api/Products
+- **Estoque**: http://localhost:5002/api/Stock
+
+#### **3. Via PowerShell (Exemplo)**
+```powershell
+# Criar fornecedor
+$body = @{
+    nome = "Novo Fornecedor"
+    cnpj = "11.222.333/0001-44"
+    telefone = "(11) 99999-8888"
+    email = "contato@novofornecedor.com"
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "http://localhost:5002/api/Suppliers" -Method POST -ContentType "application/json" -Body $body
+```
+
