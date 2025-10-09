@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using OPME.StockManagement.Application.DTOs;
 using OPME.StockManagement.Application.Exceptions;
 using OPME.StockManagement.Application.Services;
+using OPME.StockManagement.Domain.Interfaces;
+using OPME.StockManagement.Domain.Entities;
 
 namespace OPME.StockManagement.WebAPI.Controllers;
 
@@ -10,10 +12,12 @@ namespace OPME.StockManagement.WebAPI.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly ProductService _productService;
+    private readonly IBrandRepository _brandRepository;
 
-    public ProductsController(ProductService productService)
+    public ProductsController(ProductService productService, IBrandRepository brandRepository)
     {
         _productService = productService;
+        _brandRepository = brandRepository;
     }
 
     [HttpGet]
@@ -112,6 +116,29 @@ public class ProductsController : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return NotFound(ex.Message);
+        }
+    }
+
+    [HttpPost("create-brand")]
+    public async Task<ActionResult<BrandDto>> CreateBrand(string nome)
+    {
+        try
+        {
+            var brand = new Brand(nome);
+            await _brandRepository.AddAsync(brand);
+            
+            return Ok(new BrandDto
+            {
+                Id = brand.Id,
+                Nome = brand.Nome,
+                Ativo = brand.Ativo,
+                CreatedAt = brand.CreatedAt,
+                UpdatedAt = brand.UpdatedAt
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }
