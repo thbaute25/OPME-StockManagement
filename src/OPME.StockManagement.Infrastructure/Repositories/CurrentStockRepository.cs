@@ -13,6 +13,12 @@ public class CurrentStockRepository : Repository<CurrentStock>, ICurrentStockRep
 
     private IQueryable<CurrentStock> GetStockWithProduct() => _dbSet.Include(s => s.Product);
 
+    public async Task<IEnumerable<CurrentStock>> GetAllWithProductAsync()
+    {
+        return await GetStockWithProduct()
+            .ToListAsync();
+    }
+
     public async Task<CurrentStock?> GetByProductIdAsync(Guid productId)
     {
         return await GetStockWithProduct()

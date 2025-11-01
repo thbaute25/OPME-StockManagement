@@ -4,6 +4,8 @@ namespace OPME.StockManagement.Domain.Interfaces;
 
 public interface IProductRepository : IRepository<Product>
 {
+    Task<Product?> GetByIdWithIncludesAsync(Guid id);
+    Task<IEnumerable<Product>> GetAllWithIncludesAsync();
     Task<Product?> GetByCodigoProdutoAsync(string codigoProduto);
     Task<IEnumerable<Product>> GetActiveProductsAsync();
     Task<IEnumerable<Product>> GetProductsBySupplierAsync(Guid supplierId);

@@ -24,59 +24,22 @@ public class ProductService
         _stockRepository = stockRepository;
     }
 
-    public async Task<ProductDto> CreateAsync(CreateProductDto dto)
-    {
-        if (await _productRepository.ExistsByCodigoProdutoAsync(dto.CodigoProduto))
-            throw new EntityAlreadyExistsException("Produto", "Código", dto.CodigoProduto);
-
-        var supplier = await _supplierRepository.GetByIdAsync(dto.SupplierId);
-        if (supplier == null)
-            throw new EntityNotFoundException("Fornecedor", dto.SupplierId);
-
-        var brand = await _brandRepository.GetByIdAsync(dto.BrandId);
-        if (brand == null)
-            throw new EntityNotFoundException("Marca", dto.BrandId);
-
-        var product = new Product(dto.CodigoProduto, dto.NomeProduto, dto.SupplierId, dto.BrandId);
-        var created = await _productRepository.AddAsync(product);
-
-        // Criar estoque inicial
-        var stock = new CurrentStock(created.Id, 0);
-        await _stockRepository.AddAsync(stock);
-
-        return await MapToDtoAsync(created);
-    }
-
     public async Task<ProductDto?> GetByIdAsync(Guid id)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        return product == null ? null : await MapToDtoAsync(product);
+        var product = await _productRepository.GetByIdWithIncludesAsync(id);
+        return product == null ? null : MapToDto(product);
     }
 
     public async Task<IEnumerable<ProductDto>> GetAllAsync()
     {
-        var products = await _productRepository.GetAllAsync();
-        var result = new List<ProductDto>();
-        
-        foreach (var product in products)
-        {
-            result.Add(await MapToDtoAsync(product));
-        }
-        
-        return result;
+        var products = await _productRepository.GetAllWithIncludesAsync();
+        return products.Select(MapToDto);
     }
 
     public async Task<IEnumerable<ProductDto>> GetActiveAsync()
     {
         var products = await _productRepository.GetActiveProductsAsync();
-        var result = new List<ProductDto>();
-        
-        foreach (var product in products)
-        {
-            result.Add(await MapToDtoAsync(product));
-        }
-        
-        return result;
+        return products.Select(MapToDto);
     }
 
     public async Task<ProductDto> UpdateAsync(Guid id, CreateProductDto dto)
@@ -88,7 +51,9 @@ public class ProductService
         product.UpdateInfo(dto.CodigoProduto, dto.NomeProduto);
         await _productRepository.UpdateAsync(product);
         
-        return await MapToDtoAsync(product);
+        // Buscar com includes para mapear corretamente
+        var productWithIncludes = await _productRepository.GetByIdWithIncludesAsync(id);
+        return MapToDto(productWithIncludes!);
     }
 
     public async Task DeleteAsync(Guid id)
@@ -114,12 +79,33 @@ public class ProductService
         await _productRepository.UpdateAsync(product);
     }
 
-    private async Task<ProductDto> MapToDtoAsync(Product product)
+    public async Task<ProductDto> CreateAsync(CreateProductDto dto)
     {
-        var supplier = await _supplierRepository.GetByIdAsync(product.SupplierId);
-        var brand = await _brandRepository.GetByIdAsync(product.BrandId);
-        var stock = await _stockRepository.GetByProductIdAsync(product.Id);
+        if (await _productRepository.ExistsByCodigoProdutoAsync(dto.CodigoProduto))
+            throw new EntityAlreadyExistsException("Produto", "Código", dto.CodigoProduto);
 
+        var supplier = await _supplierRepository.GetByIdAsync(dto.SupplierId);
+        if (supplier == null)
+            throw new EntityNotFoundException("Fornecedor", dto.SupplierId);
+
+        var brand = await _brandRepository.GetByIdAsync(dto.BrandId);
+        if (brand == null)
+            throw new EntityNotFoundException("Marca", dto.BrandId);
+
+        var product = new Product(dto.CodigoProduto, dto.NomeProduto, dto.SupplierId, dto.BrandId);
+        var created = await _productRepository.AddAsync(product);
+
+        // Criar estoque inicial
+        var stock = new CurrentStock(created.Id, 0);
+        await _stockRepository.AddAsync(stock);
+
+        // Buscar com includes para mapear corretamente
+        var productWithIncludes = await _productRepository.GetByIdWithIncludesAsync(created.Id);
+        return MapToDto(productWithIncludes!);
+    }
+
+    private ProductDto MapToDto(Product product)
+    {
         return new ProductDto
         {
             Id = product.Id,
@@ -130,9 +116,9 @@ public class ProductService
             UpdatedAt = product.UpdatedAt,
             SupplierId = product.SupplierId,
             BrandId = product.BrandId,
-            SupplierNome = supplier?.Nome ?? string.Empty,
-            BrandNome = brand?.Nome ?? string.Empty,
-            QuantidadeEstoque = stock?.QuantidadeAtual
+            SupplierNome = product.Supplier?.Nome ?? string.Empty,
+            BrandNome = product.Brand?.Nome ?? string.Empty,
+            QuantidadeEstoque = product.CurrentStock?.QuantidadeAtual
         };
     }
 }

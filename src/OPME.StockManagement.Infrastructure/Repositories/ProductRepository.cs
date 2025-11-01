@@ -19,6 +19,18 @@ public class ProductRepository : Repository<Product>, IProductRepository
             .Include(p => p.CurrentStock);
     }
 
+    public async Task<Product?> GetByIdWithIncludesAsync(Guid id)
+    {
+        return await GetProductsWithIncludes()
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<IEnumerable<Product>> GetAllWithIncludesAsync()
+    {
+        return await GetProductsWithIncludes()
+            .ToListAsync();
+    }
+
     public async Task<Product?> GetByCodigoProdutoAsync(string codigoProduto)
     {
         return await GetProductsWithIncludes()

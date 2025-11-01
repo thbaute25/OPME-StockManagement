@@ -4,6 +4,7 @@ namespace OPME.StockManagement.Domain.Interfaces;
 
 public interface ICurrentStockRepository : IRepository<CurrentStock>
 {
+    Task<IEnumerable<CurrentStock>> GetAllWithProductAsync();
     Task<CurrentStock?> GetByProductIdAsync(Guid productId);
     Task<IEnumerable<CurrentStock>> GetLowStockItemsAsync(int quantidadeMinima);
     Task<IEnumerable<CurrentStock>> GetOutOfStockItemsAsync();

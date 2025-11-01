@@ -22,36 +22,19 @@ public class StockService
         if (stock == null)
             throw new EntityNotFoundException("Estoque", productId);
 
-        var product = await _productRepository.GetByIdAsync(productId);
-        return MapToDto(stock, product!);
+        return MapToDto(stock);
     }
 
     public async Task<IEnumerable<CurrentStockDto>> GetAllAsync()
     {
-        var stocks = await _stockRepository.GetAllAsync();
-        var result = new List<CurrentStockDto>();
-
-        foreach (var stock in stocks)
-        {
-            var product = await _productRepository.GetByIdAsync(stock.ProductId);
-            result.Add(MapToDto(stock, product!));
-        }
-
-        return result;
+        var stocks = await _stockRepository.GetAllWithProductAsync();
+        return stocks.Select(s => MapToDto(s));
     }
 
     public async Task<IEnumerable<CurrentStockDto>> GetLowStockAsync(int quantidadeMinima = 10)
     {
         var stocks = await _stockRepository.GetLowStockItemsAsync(quantidadeMinima);
-        var result = new List<CurrentStockDto>();
-
-        foreach (var stock in stocks)
-        {
-            var product = await _productRepository.GetByIdAsync(stock.ProductId);
-            result.Add(MapToDto(stock, product!));
-        }
-
-        return result;
+        return stocks.Select(s => MapToDto(s));
     }
 
     public async Task<CurrentStockDto> AddStockAsync(Guid productId, int quantidade)
@@ -63,8 +46,9 @@ public class StockService
         stock.AddStock(quantidade);
         await _stockRepository.UpdateAsync(stock);
 
-        var product = await _productRepository.GetByIdAsync(productId);
-        return MapToDto(stock, product!);
+        // Buscar novamente com includes
+        var stockWithProduct = await _stockRepository.GetByProductIdAsync(productId);
+        return MapToDto(stockWithProduct!);
     }
 
     public async Task<CurrentStockDto> ReduceStockAsync(Guid productId, int quantidade)
@@ -76,8 +60,9 @@ public class StockService
         stock.ReduceStock(quantidade);
         await _stockRepository.UpdateAsync(stock);
 
-        var product = await _productRepository.GetByIdAsync(productId);
-        return MapToDto(stock, product!);
+        // Buscar novamente com includes
+        var stockWithProduct = await _stockRepository.GetByProductIdAsync(productId);
+        return MapToDto(stockWithProduct!);
     }
 
     public async Task<CurrentStockDto> SetStockAsync(Guid productId, int quantidade)
@@ -89,20 +74,24 @@ public class StockService
         stock.SetStock(quantidade);
         await _stockRepository.UpdateAsync(stock);
 
-        var product = await _productRepository.GetByIdAsync(productId);
-        return MapToDto(stock, product!);
+        // Buscar novamente com includes
+        var stockWithProduct = await _stockRepository.GetByProductIdAsync(productId);
+        return MapToDto(stockWithProduct!);
     }
 
-    private static CurrentStockDto MapToDto(CurrentStock stock, Product product)
+    private static CurrentStockDto MapToDto(CurrentStock stock, Product? product = null)
     {
+        // Se product não foi passado, usar a propriedade de navegação já carregada
+        product ??= stock.Product;
+        
         return new CurrentStockDto
         {
             Id = stock.Id,
             QuantidadeAtual = stock.QuantidadeAtual,
             DataUltimaAtualizacao = stock.DataUltimaAtualizacao,
             ProductId = stock.ProductId,
-            ProductNome = product.NomeProduto,
-            ProductCodigo = product.CodigoProduto
+            ProductNome = product?.NomeProduto ?? string.Empty,
+            ProductCodigo = product?.CodigoProduto ?? string.Empty
         };
     }
 }
