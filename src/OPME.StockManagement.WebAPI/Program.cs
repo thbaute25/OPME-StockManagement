@@ -9,7 +9,7 @@ using OPME.StockManagement.Infrastructure.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -41,6 +41,13 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseCors("AllowAll");
@@ -53,6 +60,13 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseAuthorization();
+
+// Configure default MVC routes (conventional routing)
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map API controllers (those with [ApiController] attribute)
 app.MapControllers();
 
 // Seed initial data

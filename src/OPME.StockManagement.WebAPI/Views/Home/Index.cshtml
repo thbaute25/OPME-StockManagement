@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "OPME Stock Management";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Sistema de Gestão de Estoque OPME</h1>
+    <p class="lead">Sistema para controle e gerenciamento de materiais cirúrgicos</p>
+    
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Fornecedores</h5>
+                    <p class="card-text">Gerenciar fornecedores de materiais</p>
+                    <a href="/api/Suppliers" class="btn btn-primary">Acessar API</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Produtos</h5>
+                    <p class="card-text">Gerenciar produtos e inventário</p>
+                    <a href="/api/Products" class="btn btn-primary">Acessar API</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Estoque</h5>
+                    <p class="card-text">Controle de estoque e movimentações</p>
+                    <a href="/api/Stock" class="btn btn-primary">Acessar API</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h3>API Documentation</h3>
+        <p>Acesse a documentação completa da API através do Swagger</p>
+        <a href="/swagger" class="btn btn-success" target="_blank">Abrir Swagger UI</a>
+    </div>
+</div>
+
