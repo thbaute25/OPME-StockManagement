@@ -21,6 +21,12 @@ public static class DbInitializer
         context.Brands.Add(brand);
         context.SaveChanges();
 
+        var config = new SupplierConfiguration(
+            supplier.Id,
+            mesesPlanejamento: 6,
+            mesesMinimos: 2,
+            prazoEntregaDias: 15);
+
         var product = new Product(
             "PROD001",
             "Seringa 10ml",
@@ -29,6 +35,7 @@ public static class DbInitializer
 
         var stock = new CurrentStock(product.Id, 50);
 
+        context.SupplierConfigurations.Add(config);
         context.Products.Add(product);
         context.CurrentStocks.Add(stock);
         context.SaveChanges();

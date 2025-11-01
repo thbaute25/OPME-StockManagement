@@ -25,6 +25,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<SupplierConfigurationService>();
 
 // Add CORS
 builder.Services.AddCors(options =>

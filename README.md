@@ -251,6 +251,10 @@ dotnet run --project src/OPME.StockManagement.WebAPI --urls "http://localhost:50
 | POST | `/api/Products` | Criar novo produto |
 | POST | `/api/Products/create-brand` | Criar nova marca |
 | GET | `/api/Stock` | Verificar estoque |
+| GET | `/api/SupplierConfigurations` | Listar configurações de fornecedores |
+| POST | `/api/SupplierConfigurations` | Criar configuração de fornecedor |
+| GET | `/api/SupplierConfigurations/supplier/{id}` | Buscar configuração por fornecedor |
+| PUT | `/api/SupplierConfigurations/{id}` | Atualizar configuração |
 
 ### 🗄️ Banco de Dados
 - **Tipo**: SQLite
