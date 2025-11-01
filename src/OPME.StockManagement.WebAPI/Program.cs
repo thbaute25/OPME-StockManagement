@@ -1,5 +1,8 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using OPME.StockManagement.Application.Services;
+using OPME.StockManagement.Application.Validators;
 using OPME.StockManagement.Infrastructure;
 using OPME.StockManagement.Infrastructure.Data;
 
@@ -9,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssembly(typeof(CreateSupplierDtoValidator).Assembly);
 
 // Add Infrastructure (DbContext + Repositories)
 builder.Services.AddInfrastructure(builder.Configuration);
