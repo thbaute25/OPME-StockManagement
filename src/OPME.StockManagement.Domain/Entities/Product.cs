@@ -3,8 +3,8 @@ namespace OPME.StockManagement.Domain.Entities;
 public class Product
 {
     public Guid Id { get; private set; }
-    public string CodigoProduto { get; private set; }
-    public string NomeProduto { get; private set; }
+    public string CodigoProduto { get; private set; } = null!;
+    public string NomeProduto { get; private set; } = null!;
     public bool Ativo { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }

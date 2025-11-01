@@ -20,6 +20,9 @@ logs/
 # Database
 *.mdf
 *.ldf
+*.db
+*.db-shm
+*.db-wal
 
 # OS generated files
 Thumbs.db

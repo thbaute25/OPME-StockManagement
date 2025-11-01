@@ -3,10 +3,10 @@ namespace OPME.StockManagement.Domain.Entities;
 public class Supplier
 {
     public Guid Id { get; private set; }
-    public string Nome { get; private set; }
-    public string Cnpj { get; private set; }
-    public string Telefone { get; private set; }
-    public string Email { get; private set; }
+    public string Nome { get; private set; } = null!;
+    public string Cnpj { get; private set; } = null!;
+    public string Telefone { get; private set; } = null!;
+    public string Email { get; private set; } = null!;
     public bool Ativo { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }

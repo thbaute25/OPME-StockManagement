@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OPME.StockManagement.Infrastructure.Data;
 
@@ -16,31 +15,27 @@ namespace OPME.StockManagement.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
 
             modelBuilder.Entity("OPME.StockManagement.Domain.Entities.Brand", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -51,22 +46,22 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DataUltimaAtualizacao")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("QuantidadeAtual")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -80,32 +75,32 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<Guid>("BrandId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CodigoProduto")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NomeProduto")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("SupplierId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -123,26 +118,26 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DataSaida")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Observacoes")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Quantidade")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -157,36 +152,36 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
                         .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -203,28 +198,28 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("MesesMinimos")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MesesPlanejamento")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PrazoEntregaDias")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<Guid>("SupplierId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

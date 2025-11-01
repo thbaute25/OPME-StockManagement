@@ -32,14 +32,17 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseRouting();
 
-app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "OPME Stock Management API");
+    c.RoutePrefix = "swagger";
+});
+
 app.UseAuthorization();
 app.MapControllers();
 

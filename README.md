@@ -93,9 +93,7 @@ O projeto segue os princípios da Clean Architecture, separando as responsabilid
 **4. Camada de Infraestrutura (Infrastructure)**
 - **Data**: Contexto do Entity Framework, configurações de banco e migrações
 - **Repositories**: Implementação concreta dos repositórios definidos no domínio
-- **ExternalServices**: Integrações com APIs externas (ANVISA, fornecedores)
-- **Configuration**: Configurações de aplicação, connection strings, etc.
-- **Justificativa**: Esta camada implementa as interfaces definidas no domínio, isolando os detalhes técnicos de acesso a dados e integrações externas. Permite que o sistema seja facilmente adaptado para diferentes tecnologias de persistência ou serviços externos sem afetar as regras de negócio.
+- **Justificativa**: Esta camada implementa as interfaces definidas no domínio, isolando os detalhes técnicos de acesso a dados. Permite que o sistema seja facilmente adaptado para diferentes tecnologias de persistência sem afetar as regras de negócio. Futuras integrações com APIs externas (como ANVISA ou fornecedores) podem ser adicionadas nesta camada através de serviços especializados.
 
 #### Benefícios da Arquitetura Escolhida
 
@@ -205,8 +203,7 @@ src/
 │   └── Enums/
 └── Infrastructure/        # Camada de Infraestrutura
     ├── Data/
-    ├── Repositories/
-    └── ExternalServices/
+    └── Repositories/
 ```
 
 ## 🚀 Como Executar a Aplicação

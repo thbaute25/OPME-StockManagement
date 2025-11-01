@@ -15,11 +15,11 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 name: "Brands",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Nome = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,14 +30,14 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 name: "Suppliers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Cnpj = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Nome = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Cnpj = table.Column<string>(type: "TEXT", maxLength: 14, nullable: false),
+                    Telefone = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,14 +48,14 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CodigoProduto = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    NomeProduto = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CodigoProduto = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    NomeProduto = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    SupplierId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    BrandId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,14 +78,14 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 name: "SupplierConfigurations",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MesesPlanejamento = table.Column<int>(type: "int", nullable: false),
-                    MesesMinimos = table.Column<int>(type: "int", nullable: false),
-                    PrazoEntregaDias = table.Column<int>(type: "int", nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SupplierId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    MesesPlanejamento = table.Column<int>(type: "INTEGER", nullable: false),
+                    MesesMinimos = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrazoEntregaDias = table.Column<int>(type: "INTEGER", nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SupplierId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,12 +102,12 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 name: "CurrentStocks",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    QuantidadeAtual = table.Column<int>(type: "int", nullable: false),
-                    DataUltimaAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    QuantidadeAtual = table.Column<int>(type: "INTEGER", nullable: false),
+                    DataUltimaAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,13 +124,13 @@ namespace OPME.StockManagement.Infrastructure.Migrations
                 name: "StockOutputs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Quantidade = table.Column<int>(type: "int", nullable: false),
-                    DataSaida = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Observacoes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
+                    DataSaida = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Observacoes = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

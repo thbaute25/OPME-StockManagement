@@ -13,7 +13,7 @@ public static class DependencyInjection
     {
         // DbContext
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 
         // Repositories
         services.AddScoped<ISupplierRepository, SupplierRepository>();

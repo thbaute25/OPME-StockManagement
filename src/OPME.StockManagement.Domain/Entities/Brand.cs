@@ -3,7 +3,7 @@ namespace OPME.StockManagement.Domain.Entities;
 public class Brand
 {
     public Guid Id { get; private set; }
-    public string Nome { get; private set; }
+    public string Nome { get; private set; } = null!;
     public bool Ativo { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
