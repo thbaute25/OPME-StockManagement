@@ -120,11 +120,11 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost("create-brand")]
-    public async Task<ActionResult<BrandDto>> CreateBrand(string nome)
+    public async Task<ActionResult<BrandDto>> CreateBrand(CreateBrandDto dto)
     {
         try
         {
-            var brand = new Brand(nome);
+            var brand = new Brand(dto.Nome);
             await _brandRepository.AddAsync(brand);
             
             return Ok(new BrandDto
