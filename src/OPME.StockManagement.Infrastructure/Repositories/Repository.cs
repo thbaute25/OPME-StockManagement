@@ -50,6 +50,21 @@ public class Repository<T> : IRepository<T> where T : class
         await _context.SaveChangesAsync();
     }
 
+    public virtual void Add(T entity)
+    {
+        _dbSet.Add(entity);
+    }
+
+    public virtual void Update(T entity)
+    {
+        _dbSet.Update(entity);
+    }
+
+    public virtual void Delete(T entity)
+    {
+        _dbSet.Remove(entity);
+    }
+
     public virtual async Task<bool> ExistsAsync(Guid id)
     {
         var entity = await _dbSet.FindAsync(id);

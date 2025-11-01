@@ -12,6 +12,7 @@ public class ProductService
     private readonly ISupplierRepository _supplierRepository;
     private readonly IBrandRepository _brandRepository;
     private readonly ICurrentStockRepository _stockRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ProductService> _logger;
 
     public ProductService(
@@ -19,12 +20,14 @@ public class ProductService
         ISupplierRepository supplierRepository,
         IBrandRepository brandRepository,
         ICurrentStockRepository stockRepository,
+        IUnitOfWork unitOfWork,
         ILogger<ProductService> logger)
     {
         _productRepository = productRepository;
         _supplierRepository = supplierRepository;
         _brandRepository = brandRepository;
         _stockRepository = stockRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -164,19 +167,22 @@ public class ProductService
 
         try
         {
+            await _unitOfWork.BeginTransactionAsync();
+            
             var product = new Product(dto.CodigoProduto, dto.NomeProduto, dto.SupplierId, dto.BrandId);
-            var created = await _productRepository.AddAsync(product);
+            _productRepository.Add(product);
+            _stockRepository.Add(new CurrentStock(product.Id, 0));
+            
+            await _unitOfWork.CommitTransactionAsync();
 
-            var stock = new CurrentStock(created.Id, 0);
-            await _stockRepository.AddAsync(stock);
-
-            var productWithIncludes = await _productRepository.GetByIdWithIncludesAsync(created.Id);
+            var productWithIncludes = await _productRepository.GetByIdWithIncludesAsync(product.Id);
             _logger.LogInformation("Produto criado: {ProductId} - {CodigoProduto}", productWithIncludes!.Id, productWithIncludes.CodigoProduto);
             
             return MapToDto(productWithIncludes);
         }
         catch (Exception ex)
         {
+            await _unitOfWork.RollbackTransactionAsync();
             _logger.LogError(ex, "Erro ao criar produto: {CodigoProduto}", dto.CodigoProduto);
             throw;
         }
