@@ -23,7 +23,7 @@ O sistema abrangerá as principais funcionalidades necessárias para uma gestão
 
 ### Funcionalidades Principais:
 
-- Cadastro de produtos com informações como código ANVISA, marca, lote, validade e fornecedor.
+- Cadastro de produtos com informações como código do produto, marca e fornecedor.
 - Registro de movimentações de estoque (entrada, saída, uso e devolução).
 - Controle de consignação de produtos em hospitais.
 - Monitoramento de estoque crítico, com alertas automáticos.
@@ -33,6 +33,7 @@ O sistema abrangerá as principais funcionalidades necessárias para uma gestão
 
 ### Fora do Escopo (não contemplado nesta versão):
 
+- Integrações com APIs externas (ANVISA, APIs de fornecedores);
 - Integrações com sistemas hospitalares externos;
 - Pagamentos e faturamento;
 - Módulo de logística e transporte.
@@ -84,7 +85,7 @@ O projeto segue os princípios da Clean Architecture, separando as responsabilid
 
 **3. Camada de Domínio (Domain)**
 - **Entities**: Entidades de negócio principais que representam conceitos do domínio OPME
-- **ValueObjects**: Objetos de valor imutáveis para conceitos como códigos ANVISA, lotes
+- **ValueObjects**: Objetos de valor imutáveis para conceitos do domínio (reservado para expansão futura)
 - **Interfaces**: Contratos para repositórios e serviços externos
 - **Enums**: Enumerações do domínio (status de estoque, tipos de usuário, etc.)
 - **Domain Services**: Serviços de domínio para regras complexas de negócio
@@ -93,7 +94,7 @@ O projeto segue os princípios da Clean Architecture, separando as responsabilid
 **4. Camada de Infraestrutura (Infrastructure)**
 - **Data**: Contexto do Entity Framework, configurações de banco e migrações
 - **Repositories**: Implementação concreta dos repositórios definidos no domínio
-- **Justificativa**: Esta camada implementa as interfaces definidas no domínio, isolando os detalhes técnicos de acesso a dados. Permite que o sistema seja facilmente adaptado para diferentes tecnologias de persistência sem afetar as regras de negócio. Futuras integrações com APIs externas (como ANVISA ou fornecedores) podem ser adicionadas nesta camada através de serviços especializados.
+- **Justificativa**: Esta camada implementa as interfaces definidas no domínio, isolando os detalhes técnicos de acesso a dados. Permite que o sistema seja facilmente adaptado para diferentes tecnologias de persistência sem afetar as regras de negócio. A arquitetura permite que futuras integrações com APIs externas possam ser adicionadas nesta camada através de serviços especializados, quando necessário.
 
 #### Benefícios da Arquitetura Escolhida
 
