@@ -256,6 +256,23 @@ dotnet run --project src/OPME.StockManagement.WebAPI --urls "http://localhost:50
 - **Arquivo**: `OPMEStockManagement.db` 
 - **Localização**: `src/OPME.StockManagement.WebAPI/`
 
+#### Configuração da ConnectionString
+
+A connection string está configurada no arquivo `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=OPMEStockManagement.db"
+  }
+}
+```
+
+**Importante**: 
+- O banco de dados SQLite será criado automaticamente na pasta `src/OPME.StockManagement.WebAPI/` quando as migrações forem aplicadas
+- Não é necessário configurar servidor de banco de dados, o SQLite é um banco de arquivo
+- Para alterar o local do arquivo, modifique o valor de `Data Source` na connection string
+
 ### 📊 Dados de Exemplo
 A aplicação já vem com dados de exemplo:
 - **Fornecedor**: MedSupply Brasil
