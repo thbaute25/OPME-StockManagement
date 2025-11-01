@@ -41,10 +41,13 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
 
 app.UseStaticFiles();
@@ -61,13 +64,81 @@ app.UseSwaggerUI(c =>
 
 app.UseAuthorization();
 
-// Configure default MVC routes (conventional routing)
+// Configure default MVC routes first (conventional routing)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// MVC Routes for Products
+app.MapControllerRoute(
+    name: "products",
+    pattern: "Products/{action=Index}/{id?}",
+    defaults: new { controller = "ProductsMvc", action = "Index" });
+
+// MVC Routes for Suppliers
+app.MapControllerRoute(
+    name: "suppliers",
+    pattern: "Suppliers/{action=Index}/{id?}",
+    defaults: new { controller = "SuppliersMvc", action = "Index" });
+
+// MVC Routes for Stock
+app.MapControllerRoute(
+    name: "stock",
+    pattern: "Stock/{action=Index}",
+    defaults: new { controller = "StockMvc", action = "Index" });
+
 // Map API controllers (those with [ApiController] attribute)
 app.MapControllers();
+
+// Custom Routes - Rotas personalizadas (devem vir depois das rotas de controller)
+// Rotas amigáveis em português como aliases para recursos da API
+// Essas rotas redirecionam para os endpoints da API mantendo compatibilidade
+app.MapGet("/produtos", () => Results.Redirect("/api/Products", permanent: false))
+    .WithName("produtos")
+    .WithDisplayName("Listar Produtos")
+    .WithTags("Produtos");
+
+app.MapGet("/fornecedores", () => Results.Redirect("/api/Suppliers", permanent: false))
+    .WithName("fornecedores")
+    .WithDisplayName("Listar Fornecedores")
+    .WithTags("Fornecedores");
+
+app.MapGet("/estoque", () => Results.Redirect("/api/Stock", permanent: false))
+    .WithName("estoque")
+    .WithDisplayName("Listar Estoque")
+    .WithTags("Estoque");
+
+app.MapGet("/estoque/baixo", () => Results.Redirect("/api/Stock/low-stock", permanent: false))
+    .WithName("estoque-baixo")
+    .WithDisplayName("Estoque Baixo")
+    .WithTags("Estoque");
+
+app.MapGet("/produtos/ativos", () => Results.Redirect("/api/Products/active", permanent: false))
+    .WithName("produtos-ativos")
+    .WithDisplayName("Produtos Ativos")
+    .WithTags("Produtos");
+
+// Rotas personalizadas com parâmetros usando Endpoint Routing
+app.MapGet("/produtos/{id:guid}", (Guid id) => Results.Redirect($"/api/Products/{id}", permanent: false))
+    .WithName("produto-detalhes")
+    .WithDisplayName("Detalhes do Produto")
+    .WithTags("Produtos");
+
+app.MapGet("/fornecedores/{id:guid}", (Guid id) => Results.Redirect($"/api/Suppliers/{id}", permanent: false))
+    .WithName("fornecedor-detalhes")
+    .WithDisplayName("Detalhes do Fornecedor")
+    .WithTags("Fornecedores");
+
+app.MapGet("/produtos/{productId:guid}/estoque", (Guid productId) => Results.Redirect($"/api/Stock/product/{productId}", permanent: false))
+    .WithName("estoque-produto")
+    .WithDisplayName("Estoque do Produto")
+    .WithTags("Estoque");
+
+// Rotas para configurações
+app.MapGet("/configuracoes", () => Results.Redirect("/api/SupplierConfigurations", permanent: false))
+    .WithName("configuracoes")
+    .WithDisplayName("Configurações de Fornecedores")
+    .WithTags("Configurações");
 
 // Seed initial data
 using (var scope = app.Services.CreateScope())

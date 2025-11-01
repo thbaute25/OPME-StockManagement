@@ -10,27 +10,33 @@
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Fornecedores</h5>
+                    <h5 class="card-title"><i class="bi bi-building me-2"></i>Fornecedores</h5>
                     <p class="card-text">Gerenciar fornecedores de materiais</p>
-                    <a href="/api/Suppliers" class="btn btn-primary">Acessar API</a>
+                    <a asp-controller="SuppliersMvc" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Gerenciar
+                    </a>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Produtos</h5>
+                    <h5 class="card-title"><i class="bi bi-box me-2"></i>Produtos</h5>
                     <p class="card-text">Gerenciar produtos e inventário</p>
-                    <a href="/api/Products" class="btn btn-primary">Acessar API</a>
+                    <a asp-controller="ProductsMvc" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Gerenciar
+                    </a>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Estoque</h5>
+                    <h5 class="card-title"><i class="bi bi-clipboard-data me-2"></i>Estoque</h5>
                     <p class="card-text">Controle de estoque e movimentações</p>
-                    <a href="/api/Stock" class="btn btn-primary">Acessar API</a>
+                    <a asp-controller="StockMvc" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Visualizar
+                    </a>
                 </div>
             </div>
         </div>

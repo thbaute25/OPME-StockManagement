@@ -1,0 +1,70 @@
+@model ProductViewModel
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<h2><i class="bi bi-info-circle me-2"></i>Detalhes do Produto</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-4">Código:</dt>
+            <dd class="col-sm-8"><strong>@Model.CodigoProduto</strong></dd>
+
+            <dt class="col-sm-4">Nome:</dt>
+            <dd class="col-sm-8">@Model.NomeProduto</dd>
+
+            <dt class="col-sm-4">Fornecedor:</dt>
+            <dd class="col-sm-8">@Model.SupplierNome</dd>
+
+            <dt class="col-sm-4">Marca:</dt>
+            <dd class="col-sm-8">@Model.BrandNome</dd>
+
+            <dt class="col-sm-4">Estoque:</dt>
+            <dd class="col-sm-8">
+                @if (Model.QuantidadeEstoque.HasValue)
+                {
+                    <span class="badge @(Model.QuantidadeEstoque < 10 ? "bg-warning" : "bg-success") fs-6">
+                        @Model.QuantidadeEstoque unidades
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">N/A</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Status:</dt>
+            <dd class="col-sm-8">
+                @if (Model.Ativo)
+                {
+                    <span class="badge bg-success">Ativo</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inativo</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Criado em:</dt>
+            <dd class="col-sm-8">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            @if (Model.UpdatedAt.HasValue)
+            {
+                <dt class="col-sm-4">Atualizado em:</dt>
+                <dd class="col-sm-8">@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</dd>
+            }
+        </dl>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bi bi-pencil me-1"></i>Editar
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Voltar
+            </a>
+        </div>
+    </div>
+</div>
+
