@@ -13,6 +13,7 @@ public class ProductDto
     public string SupplierNome { get; set; } = string.Empty;
     public string BrandNome { get; set; } = string.Empty;
     public int? QuantidadeEstoque { get; set; }
+    public List<Link>? Links { get; set; }
 }
 
 public class CreateProductDto

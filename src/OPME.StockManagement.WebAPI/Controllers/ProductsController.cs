@@ -13,17 +13,26 @@ public class ProductsController : ControllerBase
 {
     private readonly ProductService _productService;
     private readonly IBrandRepository _brandRepository;
+    private readonly HateoasService _hateoasService;
 
-    public ProductsController(ProductService productService, IBrandRepository brandRepository)
+    public ProductsController(
+        ProductService productService, 
+        IBrandRepository brandRepository,
+        HateoasService hateoasService)
     {
         _productService = productService;
         _brandRepository = brandRepository;
+        _hateoasService = hateoasService;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
         var products = await _productService.GetAllAsync();
+        foreach (var product in products)
+        {
+            product.Links = _hateoasService.GetProductLinks(product.Id);
+        }
         return Ok(products);
     }
 
@@ -31,6 +40,10 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetActive()
     {
         var products = await _productService.GetActiveAsync();
+        foreach (var product in products)
+        {
+            product.Links = _hateoasService.GetProductLinks(product.Id);
+        }
         return Ok(products);
     }
 
@@ -43,6 +56,7 @@ public class ProductsController : ControllerBase
             if (product == null)
                 return NotFound();
             
+            product.Links = _hateoasService.GetProductLinks(id);
             return Ok(product);
         }
         catch (EntityNotFoundException ex)
@@ -57,6 +71,7 @@ public class ProductsController : ControllerBase
         try
         {
             var product = await _productService.CreateAsync(dto);
+            product.Links = _hateoasService.GetProductLinks(product.Id);
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
         catch (EntityAlreadyExistsException ex)
@@ -79,6 +94,7 @@ public class ProductsController : ControllerBase
         try
         {
             var product = await _productService.UpdateAsync(id, dto);
+            product.Links = _hateoasService.GetProductLinks(id);
             return Ok(product);
         }
         catch (EntityNotFoundException ex)

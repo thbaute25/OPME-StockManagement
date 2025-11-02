@@ -140,6 +140,73 @@ public class SupplierService
         }
     }
 
+    public async Task<PagedResult<SupplierDto>> SearchAsync(SupplierSearchParams searchParams)
+    {
+        try
+        {
+            var suppliers = await _supplierRepository.GetAllAsync();
+            
+            // Aplicar filtros
+            var query = suppliers.AsQueryable();
+            
+            if (!string.IsNullOrWhiteSpace(searchParams.SearchTerm))
+            {
+                var term = searchParams.SearchTerm.ToLowerInvariant();
+                query = query.Where(s => 
+                    s.Nome.ToLower().Contains(term) ||
+                    s.Cnpj.Contains(term) ||
+                    s.Email.ToLower().Contains(term) ||
+                    s.Telefone.Contains(term));
+            }
+            
+            if (searchParams.Ativo.HasValue)
+            {
+                query = query.Where(s => s.Ativo == searchParams.Ativo.Value);
+            }
+            
+            // Aplicar ordenação
+            if (!string.IsNullOrWhiteSpace(searchParams.SortBy))
+            {
+                var sortBy = searchParams.SortBy.ToLowerInvariant();
+                var isDesc = searchParams.SortDirection?.ToLowerInvariant() == "desc";
+                
+                query = sortBy switch
+                {
+                    "nome" => isDesc ? query.OrderByDescending(s => s.Nome) : query.OrderBy(s => s.Nome),
+                    "cnpj" => isDesc ? query.OrderByDescending(s => s.Cnpj) : query.OrderBy(s => s.Cnpj),
+                    "email" => isDesc ? query.OrderByDescending(s => s.Email) : query.OrderBy(s => s.Email),
+                    "criado" => isDesc ? query.OrderByDescending(s => s.CreatedAt) : query.OrderBy(s => s.CreatedAt),
+                    _ => query.OrderBy(s => s.Nome)
+                };
+            }
+            else
+            {
+                query = query.OrderBy(s => s.Nome);
+            }
+            
+            // Contar total
+            var totalCount = query.Count();
+            
+            // Aplicar paginação
+            var page = Math.Max(1, searchParams.Page);
+            var pageSize = Math.Max(1, Math.Min(100, searchParams.PageSize));
+            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            
+            return new PagedResult<SupplierDto>
+            {
+                Items = items.Select(MapToDto),
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao buscar fornecedores");
+            throw;
+        }
+    }
+
     private static SupplierDto MapToDto(Supplier supplier)
     {
         return new SupplierDto

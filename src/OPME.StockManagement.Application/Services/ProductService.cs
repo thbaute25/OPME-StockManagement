@@ -188,6 +188,97 @@ public class ProductService
         }
     }
 
+    public async Task<PagedResult<ProductDto>> SearchAsync(ProductSearchParams searchParams)
+    {
+        try
+        {
+            var products = await _productRepository.GetAllWithIncludesAsync();
+            
+            // Aplicar filtros
+            var query = products.AsQueryable();
+            
+            if (!string.IsNullOrWhiteSpace(searchParams.SearchTerm))
+            {
+                var term = searchParams.SearchTerm.ToLowerInvariant();
+                query = query.Where(p => 
+                    p.NomeProduto.ToLower().Contains(term) ||
+                    p.CodigoProduto.ToLower().Contains(term) ||
+                    (p.Supplier != null && p.Supplier.Nome.ToLower().Contains(term)) ||
+                    (p.Brand != null && p.Brand.Nome.ToLower().Contains(term)));
+            }
+            
+            if (searchParams.Ativo.HasValue)
+            {
+                query = query.Where(p => p.Ativo == searchParams.Ativo.Value);
+            }
+            
+            if (searchParams.SupplierId.HasValue)
+            {
+                query = query.Where(p => p.SupplierId == searchParams.SupplierId.Value);
+            }
+            
+            if (searchParams.BrandId.HasValue)
+            {
+                query = query.Where(p => p.BrandId == searchParams.BrandId.Value);
+            }
+            
+            if (searchParams.MinStockQuantity.HasValue)
+            {
+                query = query.Where(p => p.CurrentStock != null && 
+                    p.CurrentStock.QuantidadeAtual >= searchParams.MinStockQuantity.Value);
+            }
+            
+            if (searchParams.MaxStockQuantity.HasValue)
+            {
+                query = query.Where(p => p.CurrentStock != null && 
+                    p.CurrentStock.QuantidadeAtual <= searchParams.MaxStockQuantity.Value);
+            }
+            
+            // Aplicar ordenação
+            if (!string.IsNullOrWhiteSpace(searchParams.SortBy))
+            {
+                var sortBy = searchParams.SortBy.ToLowerInvariant();
+                var isDesc = searchParams.SortDirection?.ToLowerInvariant() == "desc";
+                
+                query = sortBy switch
+                {
+                    "nome" => isDesc ? query.OrderByDescending(p => p.NomeProduto) : query.OrderBy(p => p.NomeProduto),
+                    "codigo" => isDesc ? query.OrderByDescending(p => p.CodigoProduto) : query.OrderBy(p => p.CodigoProduto),
+                    "fornecedor" => isDesc ? query.OrderByDescending(p => p.Supplier != null ? p.Supplier.Nome : "") : query.OrderBy(p => p.Supplier != null ? p.Supplier.Nome : ""),
+                    "marca" => isDesc ? query.OrderByDescending(p => p.Brand != null ? p.Brand.Nome : "") : query.OrderBy(p => p.Brand != null ? p.Brand.Nome : ""),
+                    "estoque" => isDesc ? query.OrderByDescending(p => p.CurrentStock != null ? p.CurrentStock.QuantidadeAtual : 0) : query.OrderBy(p => p.CurrentStock != null ? p.CurrentStock.QuantidadeAtual : 0),
+                    "criado" => isDesc ? query.OrderByDescending(p => p.CreatedAt) : query.OrderBy(p => p.CreatedAt),
+                    _ => query.OrderBy(p => p.NomeProduto)
+                };
+            }
+            else
+            {
+                query = query.OrderBy(p => p.NomeProduto);
+            }
+            
+            // Contar total
+            var totalCount = query.Count();
+            
+            // Aplicar paginação
+            var page = Math.Max(1, searchParams.Page);
+            var pageSize = Math.Max(1, Math.Min(100, searchParams.PageSize));
+            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            
+            return new PagedResult<ProductDto>
+            {
+                Items = items.Select(MapToDto),
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao buscar produtos");
+            throw;
+        }
+    }
+
     private ProductDto MapToDto(Product product)
     {
         return new ProductDto

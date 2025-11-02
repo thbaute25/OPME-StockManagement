@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using OPME.StockManagement.Application.DTOs;
 using OPME.StockManagement.Application.Services;
 using OPME.StockManagement.Application.Validators;
 using OPME.StockManagement.Infrastructure;
@@ -26,6 +27,8 @@ builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<SupplierConfigurationService>();
+builder.Services.AddScoped<HateoasService>();
+builder.Services.AddHttpContextAccessor();
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -139,6 +142,82 @@ app.MapGet("/configuracoes", () => Results.Redirect("/api/SupplierConfigurations
     .WithName("configuracoes")
     .WithDisplayName("Configurações de Fornecedores")
     .WithTags("Configurações");
+
+// Search endpoints com paginação, ordenação e filtros
+app.MapPost("/api/products/search", async (
+    ProductSearchParams searchParams,
+    ProductService productService,
+    HateoasService hateoasService) =>
+{
+    try
+    {
+        var result = await productService.SearchAsync(searchParams);
+        foreach (var product in result.Items)
+        {
+            product.Links = hateoasService.GetProductLinks(product.Id);
+        }
+        return Results.Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+})
+    .WithName("products-search")
+    .WithDisplayName("Buscar Produtos")
+    .WithTags("Produtos")
+    .Produces<PagedResult<ProductDto>>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status400BadRequest);
+
+app.MapPost("/api/suppliers/search", async (
+    SupplierSearchParams searchParams,
+    SupplierService supplierService,
+    HateoasService hateoasService) =>
+{
+    try
+    {
+        var result = await supplierService.SearchAsync(searchParams);
+        foreach (var supplier in result.Items)
+        {
+            supplier.Links = hateoasService.GetSupplierLinks(supplier.Id);
+        }
+        return Results.Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+})
+    .WithName("suppliers-search")
+    .WithDisplayName("Buscar Fornecedores")
+    .WithTags("Fornecedores")
+    .Produces<PagedResult<SupplierDto>>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status400BadRequest);
+
+app.MapPost("/api/stock/search", async (
+    StockSearchParams searchParams,
+    StockService stockService,
+    HateoasService hateoasService) =>
+{
+    try
+    {
+        var result = await stockService.SearchAsync(searchParams);
+        foreach (var stock in result.Items)
+        {
+            stock.Links = hateoasService.GetStockLinks(stock.Id, stock.ProductId);
+        }
+        return Results.Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+})
+    .WithName("stock-search")
+    .WithDisplayName("Buscar Estoque")
+    .WithTags("Estoque")
+    .Produces<PagedResult<CurrentStockDto>>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status400BadRequest);
 
 // Seed initial data
 using (var scope = app.Services.CreateScope())

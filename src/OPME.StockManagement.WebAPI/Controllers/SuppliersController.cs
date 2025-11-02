@@ -10,16 +10,22 @@ namespace OPME.StockManagement.WebAPI.Controllers;
 public class SuppliersController : ControllerBase
 {
     private readonly SupplierService _supplierService;
+    private readonly HateoasService _hateoasService;
 
-    public SuppliersController(SupplierService supplierService)
+    public SuppliersController(SupplierService supplierService, HateoasService hateoasService)
     {
         _supplierService = supplierService;
+        _hateoasService = hateoasService;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SupplierDto>>> GetAll()
     {
         var suppliers = await _supplierService.GetAllAsync();
+        foreach (var supplier in suppliers)
+        {
+            supplier.Links = _hateoasService.GetSupplierLinks(supplier.Id);
+        }
         return Ok(suppliers);
     }
 
@@ -32,6 +38,7 @@ public class SuppliersController : ControllerBase
             if (supplier == null)
                 return NotFound();
             
+            supplier.Links = _hateoasService.GetSupplierLinks(id);
             return Ok(supplier);
         }
         catch (EntityNotFoundException ex)
@@ -46,6 +53,7 @@ public class SuppliersController : ControllerBase
         try
         {
             var supplier = await _supplierService.CreateAsync(dto);
+            supplier.Links = _hateoasService.GetSupplierLinks(supplier.Id);
             return CreatedAtAction(nameof(GetById), new { id = supplier.Id }, supplier);
         }
         catch (EntityAlreadyExistsException ex)
@@ -64,6 +72,7 @@ public class SuppliersController : ControllerBase
         try
         {
             var supplier = await _supplierService.UpdateAsync(id, dto);
+            supplier.Links = _hateoasService.GetSupplierLinks(id);
             return Ok(supplier);
         }
         catch (EntityNotFoundException ex)
