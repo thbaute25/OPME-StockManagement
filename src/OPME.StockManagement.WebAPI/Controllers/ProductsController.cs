@@ -9,6 +9,7 @@ namespace OPME.StockManagement.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class ProductsController : ControllerBase
 {
     private readonly ProductService _productService;
@@ -25,7 +26,11 @@ public class ProductsController : ControllerBase
         _hateoasService = hateoasService;
     }
 
+    /// <summary>
+    /// Obtém todos os produtos
+    /// </summary>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
         var products = await _productService.GetAllAsync();
@@ -36,7 +41,11 @@ public class ProductsController : ControllerBase
         return Ok(products);
     }
 
+    /// <summary>
+    /// Obtém apenas produtos ativos
+    /// </summary>
     [HttpGet("active")]
+    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetActive()
     {
         var products = await _productService.GetActiveAsync();
@@ -47,14 +56,25 @@ public class ProductsController : ControllerBase
         return Ok(products);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDto>> GetById(Guid id)
+    /// <summary>
+    /// Obtém um produto por ID
+    /// </summary>
+    /// <param name="id">ID do produto</param>
+    /// <returns>Produto encontrado</returns>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ProductDto>> GetById([FromRoute] Guid id)
     {
+        if (id == Guid.Empty)
+            return BadRequest("ID inválido");
+
         try
         {
             var product = await _productService.GetByIdAsync(id);
             if (product == null)
-                return NotFound();
+                return NotFound($"Produto com ID {id} não encontrado");
             
             product.Links = _hateoasService.GetProductLinks(id);
             return Ok(product);
@@ -65,9 +85,24 @@ public class ProductsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Cria um novo produto
+    /// </summary>
+    /// <param name="dto">Dados do produto a ser criado</param>
+    /// <returns>Produto criado</returns>
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> Create(CreateProductDto dto)
+    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto dto)
     {
+        if (dto == null)
+            return BadRequest("Dados do produto não podem ser nulos");
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
             var product = await _productService.CreateAsync(dto);
@@ -84,13 +119,32 @@ public class ProductsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest($"Erro ao criar produto: {ex.Message}");
         }
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<ProductDto>> Update(Guid id, CreateProductDto dto)
+    /// <summary>
+    /// Atualiza um produto existente
+    /// </summary>
+    /// <param name="id">ID do produto</param>
+    /// <param name="dto">Dados atualizados do produto</param>
+    /// <returns>Produto atualizado</returns>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ProductDto>> Update([FromRoute] Guid id, [FromBody] CreateProductDto dto)
     {
+        if (id == Guid.Empty)
+            return BadRequest("ID inválido");
+
+        if (dto == null)
+            return BadRequest("Dados do produto não podem ser nulos");
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
             var product = await _productService.UpdateAsync(id, dto);
@@ -101,15 +155,29 @@ public class ProductsController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+        catch (EntityAlreadyExistsException ex)
+        {
+            return Conflict(ex.Message);
+        }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest($"Erro ao atualizar produto: {ex.Message}");
         }
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid id)
+    /// <summary>
+    /// Exclui um produto
+    /// </summary>
+    /// <param name="id">ID do produto</param>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Delete([FromRoute] Guid id)
     {
+        if (id == Guid.Empty)
+            return BadRequest("ID inválido");
+
         try
         {
             await _productService.DeleteAsync(id);
@@ -119,11 +187,25 @@ public class ProductsController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+        catch (Exception ex)
+        {
+            return BadRequest($"Erro ao excluir produto: {ex.Message}");
+        }
     }
 
-    [HttpPatch("{id}/toggle-status")]
-    public async Task<ActionResult> ToggleStatus(Guid id)
+    /// <summary>
+    /// Alterna o status ativo/inativo de um produto
+    /// </summary>
+    /// <param name="id">ID do produto</param>
+    [HttpPatch("{id:guid}/toggle-status")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> ToggleStatus([FromRoute] Guid id)
     {
+        if (id == Guid.Empty)
+            return BadRequest("ID inválido");
+
         try
         {
             await _productService.ToggleStatusAsync(id);
@@ -133,11 +215,29 @@ public class ProductsController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+        catch (Exception ex)
+        {
+            return BadRequest($"Erro ao alterar status: {ex.Message}");
+        }
     }
 
+    /// <summary>
+    /// Cria uma nova marca (endpoint legado - usar /api/brands)
+    /// </summary>
+    /// <param name="dto">Dados da marca</param>
+    /// <returns>Marca criada</returns>
     [HttpPost("create-brand")]
-    public async Task<ActionResult<BrandDto>> CreateBrand(CreateBrandDto dto)
+    [ProducesResponseType(typeof(BrandDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Obsolete("Use POST /api/brands instead")]
+    public async Task<ActionResult<BrandDto>> CreateBrand([FromBody] CreateBrandDto dto)
     {
+        if (dto == null)
+            return BadRequest("Dados da marca não podem ser nulos");
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
             var brand = new Brand(dto.Nome);
@@ -154,7 +254,7 @@ public class ProductsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest($"Erro ao criar marca: {ex.Message}");
         }
     }
 }

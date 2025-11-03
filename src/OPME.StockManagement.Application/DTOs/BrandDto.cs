@@ -7,6 +7,7 @@ public class BrandDto
     public bool Ativo { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public List<Link>? Links { get; set; }
 }
 
 public class CreateBrandDto

@@ -26,6 +26,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<StockOutputService>();
+builder.Services.AddScoped<BrandService>();
 builder.Services.AddScoped<SupplierConfigurationService>();
 builder.Services.AddScoped<HateoasService>();
 builder.Services.AddHttpContextAccessor();

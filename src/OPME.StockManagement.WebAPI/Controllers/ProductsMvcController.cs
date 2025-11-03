@@ -200,6 +200,23 @@ public class ProductsMvcController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleStatus(Guid id)
+    {
+        try
+        {
+            await _productService.ToggleStatusAsync(id);
+            TempData["SuccessMessage"] = "Status do produto alterado com sucesso!";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
     private async Task LoadViewBagData()
     {
         var suppliers = await _supplierRepository.GetAllAsync();

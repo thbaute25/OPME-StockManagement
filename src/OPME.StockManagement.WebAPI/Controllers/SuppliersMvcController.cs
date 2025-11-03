@@ -179,5 +179,22 @@ public class SuppliersMvcController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleStatus(Guid id)
+    {
+        try
+        {
+            await _supplierService.ToggleStatusAsync(id);
+            TempData["SuccessMessage"] = "Status do fornecedor alterado com sucesso!";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }
 

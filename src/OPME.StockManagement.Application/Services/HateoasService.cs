@@ -67,6 +67,49 @@ public class HateoasService
         };
     }
 
+    public List<Link> GetBrandLinks(Guid brandId)
+    {
+        var baseUrl = GetBaseUrl();
+        return new List<Link>
+        {
+            new Link { Href = $"{baseUrl}/api/brands/{brandId}", Rel = "self", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/brands", Rel = "collection", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/brands", Rel = "create", Method = "POST" },
+            new Link { Href = $"{baseUrl}/api/brands/{brandId}", Rel = "update", Method = "PUT" },
+            new Link { Href = $"{baseUrl}/api/brands/{brandId}", Rel = "delete", Method = "DELETE" },
+            new Link { Href = $"{baseUrl}/api/brands/{brandId}/toggle-status", Rel = "toggle-status", Method = "PATCH" }
+        };
+    }
+
+    public List<Link> GetStockOutputLinks(Guid outputId, Guid productId)
+    {
+        var baseUrl = GetBaseUrl();
+        return new List<Link>
+        {
+            new Link { Href = $"{baseUrl}/api/stockoutputs/{outputId}", Rel = "self", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/stockoutputs", Rel = "collection", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/stockoutputs", Rel = "create", Method = "POST" },
+            new Link { Href = $"{baseUrl}/api/stockoutputs/{outputId}", Rel = "delete", Method = "DELETE" },
+            new Link { Href = $"{baseUrl}/api/stockoutputs/product/{productId}", Rel = "product-outputs", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/products/{productId}", Rel = "product", Method = "GET" }
+        };
+    }
+
+    public List<Link> GetSupplierConfigurationLinks(Guid configId, Guid supplierId)
+    {
+        var baseUrl = GetBaseUrl();
+        return new List<Link>
+        {
+            new Link { Href = $"{baseUrl}/api/supplierconfigurations/supplier/{supplierId}", Rel = "self", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/supplierconfigurations", Rel = "collection", Method = "GET" },
+            new Link { Href = $"{baseUrl}/api/supplierconfigurations", Rel = "create", Method = "POST" },
+            new Link { Href = $"{baseUrl}/api/supplierconfigurations/{configId}", Rel = "update", Method = "PUT" },
+            new Link { Href = $"{baseUrl}/api/supplierconfigurations/{configId}", Rel = "delete", Method = "DELETE" },
+            new Link { Href = $"{baseUrl}/api/supplierconfigurations/{configId}/toggle-status", Rel = "toggle-status", Method = "PATCH" },
+            new Link { Href = $"{baseUrl}/api/suppliers/{supplierId}", Rel = "supplier", Method = "GET" }
+        };
+    }
+
     public List<Link> GetCollectionLinks(string resourceName)
     {
         var baseUrl = GetBaseUrl();

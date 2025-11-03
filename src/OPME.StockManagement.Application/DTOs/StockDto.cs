@@ -20,6 +20,7 @@ public class StockOutputDto
     public Guid ProductId { get; set; }
     public string ProductNome { get; set; } = string.Empty;
     public string ProductCodigo { get; set; } = string.Empty;
+    public List<Link>? Links { get; set; }
 }
 
 public class CreateStockOutputDto

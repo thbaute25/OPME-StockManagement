@@ -9,4 +9,5 @@ public interface IStockOutputRepository : IRepository<StockOutput>
     Task<IEnumerable<StockOutput>> GetByProductAndDateRangeAsync(Guid productId, DateTime startDate, DateTime endDate);
     Task<IEnumerable<StockOutput>> GetRecentOutputsAsync(int days);
     Task<int> GetTotalOutputByProductAsync(Guid productId, DateTime startDate, DateTime endDate);
+    Task<IEnumerable<StockOutput>> GetAllWithProductAsync();
 }

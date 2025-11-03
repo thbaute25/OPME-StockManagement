@@ -105,6 +105,17 @@ public class SupplierConfigurationService
         }
     }
 
+    public async Task<SupplierConfigurationDto> GetByIdAsync(Guid id)
+    {
+        var config = await _configRepository.GetByIdAsync(id);
+        if (config == null)
+        {
+            _logger.LogWarning("Configuração não encontrada: {ConfigId}", id);
+            throw new EntityNotFoundException("Configuração", id);
+        }
+        return await MapToDtoAsync(config);
+    }
+
     public async Task ToggleStatusAsync(Guid id)
     {
         var config = await _configRepository.GetByIdAsync(id);
@@ -127,6 +138,27 @@ public class SupplierConfigurationService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao alterar status: {ConfigId}", id);
+            throw;
+        }
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var config = await _configRepository.GetByIdAsync(id);
+        if (config == null)
+        {
+            _logger.LogWarning("Configuração não encontrada: {ConfigId}", id);
+            throw new EntityNotFoundException("Configuração", id);
+        }
+
+        try
+        {
+            await _configRepository.DeleteAsync(config);
+            _logger.LogInformation("Configuração excluída: {ConfigId}", id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao excluir configuração: {ConfigId}", id);
             throw;
         }
     }

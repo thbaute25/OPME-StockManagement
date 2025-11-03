@@ -52,4 +52,11 @@ public class StockOutputRepository : Repository<StockOutput>, IStockOutputReposi
             .Where(o => o.ProductId == productId && o.DataSaida >= startDate && o.DataSaida <= endDate)
             .SumAsync(o => o.Quantidade);
     }
+
+    public async Task<IEnumerable<StockOutput>> GetAllWithProductAsync()
+    {
+        return await GetOutputsWithProduct()
+            .OrderByDescending(o => o.DataSaida)
+            .ToListAsync();
+    }
 }

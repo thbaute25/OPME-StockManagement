@@ -8,54 +8,51 @@ namespace OPME.StockManagement.WebAPI.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class SuppliersController : ControllerBase
+public class BrandsController : ControllerBase
 {
-    private readonly SupplierService _supplierService;
+    private readonly BrandService _brandService;
     private readonly HateoasService _hateoasService;
 
-    public SuppliersController(SupplierService supplierService, HateoasService hateoasService)
+    public BrandsController(BrandService brandService, HateoasService hateoasService)
     {
-        _supplierService = supplierService;
+        _brandService = brandService;
         _hateoasService = hateoasService;
     }
 
     /// <summary>
-    /// Obtém todos os fornecedores
+    /// Obtém todas as marcas
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<SupplierDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<SupplierDto>>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<BrandDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<BrandDto>>> GetAll()
     {
-        var suppliers = await _supplierService.GetAllAsync();
-        foreach (var supplier in suppliers)
+        var brands = await _brandService.GetAllAsync();
+        foreach (var brand in brands)
         {
-            supplier.Links = _hateoasService.GetSupplierLinks(supplier.Id);
+            brand.Links = _hateoasService.GetBrandLinks(brand.Id);
         }
-        return Ok(suppliers);
+        return Ok(brands);
     }
 
     /// <summary>
-    /// Obtém um fornecedor por ID
+    /// Obtém uma marca por ID
     /// </summary>
-    /// <param name="id">ID do fornecedor</param>
-    /// <returns>Fornecedor encontrado</returns>
+    /// <param name="id">ID da marca</param>
+    /// <returns>Marca encontrada</returns>
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(SupplierDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BrandDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SupplierDto>> GetById([FromRoute] Guid id)
+    public async Task<ActionResult<BrandDto>> GetById([FromRoute] Guid id)
     {
         if (id == Guid.Empty)
             return BadRequest("ID inválido");
 
         try
         {
-            var supplier = await _supplierService.GetByIdAsync(id);
-            if (supplier == null)
-                return NotFound($"Fornecedor com ID {id} não encontrado");
-            
-            supplier.Links = _hateoasService.GetSupplierLinks(id);
-            return Ok(supplier);
+            var brand = await _brandService.GetByIdAsync(id);
+            brand.Links = _hateoasService.GetBrandLinks(id);
+            return Ok(brand);
         }
         catch (EntityNotFoundException ex)
         {
@@ -64,27 +61,27 @@ public class SuppliersController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo fornecedor
+    /// Cria uma nova marca
     /// </summary>
-    /// <param name="dto">Dados do fornecedor a ser criado</param>
-    /// <returns>Fornecedor criado</returns>
+    /// <param name="dto">Dados da marca a ser criada</param>
+    /// <returns>Marca criada</returns>
     [HttpPost]
-    [ProducesResponseType(typeof(SupplierDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(BrandDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<SupplierDto>> Create([FromBody] CreateSupplierDto dto)
+    public async Task<ActionResult<BrandDto>> Create([FromBody] CreateBrandDto dto)
     {
         if (dto == null)
-            return BadRequest("Dados do fornecedor não podem ser nulos");
+            return BadRequest("Dados da marca não podem ser nulos");
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            var supplier = await _supplierService.CreateAsync(dto);
-            supplier.Links = _hateoasService.GetSupplierLinks(supplier.Id);
-            return CreatedAtAction(nameof(GetById), new { id = supplier.Id }, supplier);
+            var brand = await _brandService.CreateAsync(dto);
+            brand.Links = _hateoasService.GetBrandLinks(brand.Id);
+            return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand);
         }
         catch (EntityAlreadyExistsException ex)
         {
@@ -92,37 +89,37 @@ public class SuppliersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest($"Erro ao criar fornecedor: {ex.Message}");
+            return BadRequest($"Erro ao criar marca: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Atualiza um fornecedor existente
+    /// Atualiza uma marca existente
     /// </summary>
-    /// <param name="id">ID do fornecedor</param>
-    /// <param name="dto">Dados atualizados do fornecedor</param>
-    /// <returns>Fornecedor atualizado</returns>
+    /// <param name="id">ID da marca</param>
+    /// <param name="dto">Dados atualizados da marca</param>
+    /// <returns>Marca atualizada</returns>
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(SupplierDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BrandDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<SupplierDto>> Update([FromRoute] Guid id, [FromBody] CreateSupplierDto dto)
+    public async Task<ActionResult<BrandDto>> Update([FromRoute] Guid id, [FromBody] CreateBrandDto dto)
     {
         if (id == Guid.Empty)
             return BadRequest("ID inválido");
 
         if (dto == null)
-            return BadRequest("Dados do fornecedor não podem ser nulos");
+            return BadRequest("Dados da marca não podem ser nulos");
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            var supplier = await _supplierService.UpdateAsync(id, dto);
-            supplier.Links = _hateoasService.GetSupplierLinks(id);
-            return Ok(supplier);
+            var brand = await _brandService.UpdateAsync(id, dto);
+            brand.Links = _hateoasService.GetBrandLinks(id);
+            return Ok(brand);
         }
         catch (EntityNotFoundException ex)
         {
@@ -134,14 +131,14 @@ public class SuppliersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest($"Erro ao atualizar fornecedor: {ex.Message}");
+            return BadRequest($"Erro ao atualizar marca: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Exclui um fornecedor
+    /// Exclui uma marca
     /// </summary>
-    /// <param name="id">ID do fornecedor</param>
+    /// <param name="id">ID da marca</param>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -153,7 +150,7 @@ public class SuppliersController : ControllerBase
 
         try
         {
-            await _supplierService.DeleteAsync(id);
+            await _brandService.DeleteAsync(id);
             return NoContent();
         }
         catch (EntityNotFoundException ex)
@@ -162,14 +159,14 @@ public class SuppliersController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest($"Erro ao excluir fornecedor: {ex.Message}");
+            return BadRequest($"Erro ao excluir marca: {ex.Message}");
         }
     }
 
     /// <summary>
-    /// Alterna o status ativo/inativo de um fornecedor
+    /// Alterna o status ativo/inativo de uma marca
     /// </summary>
-    /// <param name="id">ID do fornecedor</param>
+    /// <param name="id">ID da marca</param>
     [HttpPatch("{id:guid}/toggle-status")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -181,7 +178,7 @@ public class SuppliersController : ControllerBase
 
         try
         {
-            await _supplierService.ToggleStatusAsync(id);
+            await _brandService.ToggleStatusAsync(id);
             return NoContent();
         }
         catch (EntityNotFoundException ex)
