@@ -59,7 +59,7 @@ main {
 
 .dropdown-item:hover {
     background-color: #f8f9fa;
-    color: #0d6efd;
+    color: #198754;
 }
 
 .dropdown-item i {
@@ -110,6 +110,16 @@ footer hr {
     transition: all 0.3s ease;
 }
 
+.btn-primary {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-primary:hover {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
 .btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
@@ -151,6 +161,15 @@ a {
 
 a:hover {
     text-decoration: none;
+}
+
+a.text-primary,
+a.text-primary:hover {
+    color: #198754 !important;
+}
+
+.text-primary {
+    color: #198754 !important;
 }
 
 /* Ícones Bootstrap */
