@@ -17,6 +17,7 @@ A aplicação busca resolver problemas críticos do gerenciamento manual ou desc
 
 Sistema centralizado, seguro e automatizado que oferece:
 
+
 - 📦 **Controle completo** de entradas, saídas e uso de produtos
 - 🔔 **Alertas automáticos** de itens críticos e baixo estoque
 - 🔍 **Busca avançada** com paginação, ordenação e filtros
@@ -295,21 +296,3 @@ A API retorna códigos HTTP apropriados:
 - **Bruno Tizer** - RM569999
 
 ---
-
-## 📄 Licença
-
-Este projeto é desenvolvido como parte de um trabalho acadêmico.
-
----
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-
-1. Verifique a documentação no Swagger: http://localhost:5002/swagger
-2. Consulte os logs da aplicação
-3. Abra uma issue no repositório GitHub
-
----
-
-**Desenvolvido com ❤️ usando .NET 8 e Clean Architecture**
